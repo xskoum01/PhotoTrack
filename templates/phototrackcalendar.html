@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoTrack Calendar</title>
+    <!-- odkazy na FullCalendar CSS a JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <style>
+        #calendar {
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 0 10px;
+        }
+
+        /* styl pro nahled obrazku */
+        .fc-event-title img {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>PhotoTrack Calendar</h2>
+        <div id="calendar"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: '/get_events', //ziskání udalosti z Flask serveru
+                eventClick: function(info) {
+                    if (info.event.extendedProps.image) {
+                        var image = info.event.extendedProps.image;
+                        var batterylevel = info.event.extendedProps.battery_level;
+                        var chargingStatus = info.event.extendedProps.charging_status;
+                        var time_to_dead = info.event.extendedProps.time_to_dead;
+                        var dateTime = info.event.start.toLocaleString();
+                        var imgWindow = window.open("", "Image", "width=800,height=600");
+                        imgWindow.document.write("<img src='" + image + "' alt='Image' style='max-width: 50%; max-height: 50%; float: left;'/>");
+                        imgWindow.document.write("<div style='float: left; margin-left: 20px;'>");
+                        imgWindow.document.write("<p><strong>Čas pořízení:</strong> " + dateTime + "</p>");
+                        imgWindow.document.write("<p><strong>Stav baterie:</strong> " + batterylevel + "</p>");
+                        imgWindow.document.write("<p><strong>Stav nabíjení:</strong> " + chargingStatus + "</p>");
+                        imgWindow.document.write("<p><strong>Zbývající čas do vybití:</strong> " + time_to_dead + "</p>");
+                        imgWindow.document.write("</div>");
+                    }
+                },
+                eventContent: function(arg) {
+                    let customHtml = ''
+                    if (arg.event.extendedProps.image) {
+                        let date = new Date(arg.event.start);
+                        let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                        let formattedDate = date.toLocaleDateString('cs-CZ', options);
+
+                        customHtml = '<img src="' + arg.event.extendedProps.image + ' " alt="Image" style="width: 20px; height: 20px; object-fit: cover;"/> ' + " - " + formattedDate;
+                    } else {
+                        customHtml = arg.event.title;
+                    }
+                    return { html: customHtml };
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+</body>
+</html>
