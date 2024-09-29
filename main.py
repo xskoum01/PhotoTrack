@@ -1,8 +1,7 @@
 from datetime import datetime
-from flask import Flask, render_template, request, flash, redirect, url_for, jsonify
+from flask import Flask, request, flash, redirect, url_for, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import check_password_hash
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, login_required
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
 
