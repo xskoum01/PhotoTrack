@@ -20,7 +20,7 @@ except ResourceExistsError:
     pass
 
 #konfigurace databaze
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db' #umisteni databaze
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/users.db' #umisteni databaze
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
