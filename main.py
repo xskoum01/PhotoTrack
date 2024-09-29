@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
+import os
 
 app = Flask(__name__) #hlavni objekt aplikace
 
@@ -19,8 +20,10 @@ try:
 except ResourceExistsError:
     pass
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 #konfigurace databaze
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/users.db' #umisteni databaze
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}' #umisteni databaze
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
