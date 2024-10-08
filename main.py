@@ -8,7 +8,7 @@ import os
 from flask_cors import CORS
 
 app = Flask(__name__) #hlavni objekt aplikace
-CORS(app)
+CORS(app, resources={r"/upload": {"origins": "*"}})
 
 #pripojeni k azure storage
 connect_str = "DefaultEndpointsProtocol=https;AccountName=vsmphototrackstorage;AccountKey=KNjm7pyqb7yAqBX8ztxmMrxoD0TafLaQj+BLX+tS4AvNFZkd4+FVOU4PbpXYIv2gQvoSsM6q2LUt+AStfj+N7w==;EndpointSuffix=core.windows.net"
