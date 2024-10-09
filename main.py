@@ -25,7 +25,8 @@ except ResourceExistsError:
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 #konfigurace databaze
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}' #umisteni databaze
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://u9bn1e2n2jhsjl:pea9ecf7ad9e11b0a102608a6ed12fe107bfe5e26d65157a6f90b9e059613f1b3@cd27da2sn4hj7h.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d7gv4ffm198c8h'
+#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}' #umisteni databaze
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
