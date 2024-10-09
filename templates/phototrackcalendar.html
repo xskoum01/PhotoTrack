@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PhotoTrack Calendar</title>
+
+    <!-- Přidání knihovny Font Awesome pro ikonu -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
     <!-- odkazy na FullCalendar CSS a JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+
     <style>
         #calendar {
             max-width: 1300px;
@@ -34,6 +39,26 @@
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today refreshButton',  //pridani tlacitka vedle today
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                customButtons: {
+                    refreshButton: {
+                        text: '↻',
+                        click: function() {
+                            //nacet nova data
+                            fetch('/get_events')
+                                .then(response => response.json())
+                                .then(events => {
+                                    calendar.removeAllEvents();  //smaze stare udalosti
+                                    calendar.addEventSource(events);  //pridani novych dat
+                                })
+                                .catch(error => console.log('Error fetching events:', error));
+                        }
+                    }
+                },
                 events: '/get_events', //ziskání udalosti z Flask serveru
                 eventClick: function(info) {
                     if (info.event.extendedProps.image) {

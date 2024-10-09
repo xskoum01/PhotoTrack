@@ -81,7 +81,7 @@ def upload_photo():
         return "No selected file", 400
 
     # Změna názvu souboru přidáním časové značky
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    timestamp = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
     new_filename = f"{timestamp}_{file.filename}"
 
     #ulozeni souboru do azure storage
