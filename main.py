@@ -81,9 +81,13 @@ def upload_photo():
     if file.filename == '':
         return "No selected file", 400
 
+    # Změna názvu souboru přidáním časové značky
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    new_filename = f"{timestamp}_{file.filename}"
+
     #ulozeni souboru do azure storage
     container_name = "photos"
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file.filename)
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=new_filename)
     blob_client.upload_blob(file.read(), overwrite=False)
 
     #ulozeni url obrazku v azure ulozisti
