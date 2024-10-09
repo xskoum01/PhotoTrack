@@ -84,7 +84,7 @@ def upload_photo():
     #ulozeni souboru do azure storage
     container_name = "photos"
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=file.filename)
-    blob_client.upload_blob(file.read(), overwrite=True)
+    blob_client.upload_blob(file.read(), overwrite=False)
 
     #ulozeni url obrazku v azure ulozisti
     blob_url = blob_client.url
