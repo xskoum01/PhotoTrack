@@ -14,10 +14,48 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 
     <style>
+
+        body {
+        background-color: #f4f4f9;
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+        color: #4a90e2;
+        font-family: 'Verdana', sans-serif;
+        font-size: 2em;
+    }
+
         #calendar {
             max-width: 1300px;
             margin: 40px auto;
-            padding: 0 10px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .fc-toolbar button {
+        background-color: #4a90e2;
+        border: none;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        }
+
+        .fc-toolbar button:hover {
+            background-color: #357ABD;
+        }
+
+        .fc-daygrid-day {
+            background-color: #f9f9f9;
+        }
+
+        .fc-day-today {
+            background-color: #ffebcc;
         }
 
         /* styl pro nahled obrazku */
@@ -25,6 +63,7 @@
             margin-right: 5px;
             vertical-align: middle;
         }
+
     </style>
 </head>
 <body>
@@ -68,15 +107,38 @@
                         var time_to_dead = info.event.extendedProps.time_to_dead;
                         var dateTime = info.event.start.toLocaleString();
                         var imgWindow = window.open("", "Image", "width=800,height=600");
-                        imgWindow.document.write("<img src='" + image + "' alt='Image' style='max-width: 50%; max-height: 50%; float: left;'/>");
-                        imgWindow.document.write("<div style='float: left; margin-left: 20px;'>");
-                        imgWindow.document.write("<p><strong>Čas pořízení:</strong> " + dateTime + "</p>");
-                        imgWindow.document.write("<p><strong>Stav baterie:</strong> " + batterylevel + "</p>");
-                        imgWindow.document.write("<p><strong>Stav nabíjení:</strong> " + chargingStatus + "</p>");
-                        imgWindow.document.write("<p><strong>Zbývající čas do vybití:</strong> " + time_to_dead + "</p>");
-                        imgWindow.document.write("</div>");
-                    }
-                },
+                         imgWindow.document.write(`
+          <style>
+            img {
+                max-width: 80%;
+                max-height: 80%;
+                display: block;
+                margin: 20px auto;
+                border-radius: 8px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            }
+            div {
+                float: left;
+                margin-left: 20px;
+                font-family: 'Arial', sans-serif;
+                font-size: 1.1em;
+                line-height: 1.5em;
+                color: #333;
+            }
+            p {
+                margin-bottom: 10px;
+            }
+          </style>
+          <img src='` + image + `' alt='Image'/>
+          <div>
+              <p><strong>Čas pořízení:</strong> ` + dateTime + `</p>
+              <p><strong>Stav baterie:</strong> ` + batterylevel + `</p>
+              <p><strong>Stav nabíjení:</strong> ` + chargingStatus + `</p>
+              <p><strong>Zbývající čas do vybití:</strong> ` + time_to_dead + `</p>
+          </div>
+        `);
+    }
+},
                 eventContent: function(arg) {
                     let customHtml = ''
                     if (arg.event.extendedProps.image) {
