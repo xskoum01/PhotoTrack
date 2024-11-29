@@ -79,7 +79,7 @@
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    left: 'prev,next today refreshButton',  //pridani tlacitka vedle today
+                    left: 'prev,next today refreshButton configButt',  //pridani tlacitka vedle today
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
@@ -95,6 +95,12 @@
                                     calendar.addEventSource(events);  //pridani novych dat
                                 })
                                 .catch(error => console.log('Error fetching events:', error));
+                        }
+                    },
+                    configButt: {
+                        text: 'Configuration Trail Camera',
+                        click: function() {
+                            window.location.href = '/configuration';
                         }
                     }
                 },
@@ -143,7 +149,9 @@
                     let customHtml = ''
                     if (arg.event.extendedProps.image) {
                         let date = new Date(arg.event.start);
-                        let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                        //let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                        let options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+
                         let formattedDate = date.toLocaleDateString('cs-CZ', options);
 
                         customHtml = '<img src="' + arg.event.extendedProps.image + ' " alt="Image" style="width: 20px; height: 20px; object-fit: cover;"/> ' + " - " + formattedDate;

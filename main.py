@@ -5,23 +5,17 @@ from flask_login import LoginManager, UserMixin, login_user, login_required
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
 import os
-import logging
 from flask_cors import CORS
 
-# Inicializace aplikace
-app = Flask(__name__)  # hlavní objekt aplikace
+app = Flask(__name__) #hlavni objekt aplikace
 CORS(app, resources={r"/upload": {"origins": "*"}})
 
-# Nastavení logování
-logging.basicConfig(filename='app.log', level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
-
-# připojení k Azure Storage
+#pripojeni k azure storage
 connect_str = "DefaultEndpointsProtocol=https;AccountName=vsmphototrackstorage;AccountKey=KNjm7pyqb7yAqBX8ztxmMrxoD0TafLaQj+BLX+tS4AvNFZkd4+FVOU4PbpXYIv2gQvoSsM6q2LUt+AStfj+N7w==;EndpointSuffix=core.windows.net"
 blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 container_name = "photos"
 
-# vytvoření kontejneru
+#vytvoreni kontejneru
 container_client = blob_service_client.get_container_client(container_name)
 try:
     container_client.create_container()
@@ -30,12 +24,12 @@ except ResourceExistsError:
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# konfigurace databáze
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}'  # umístění databáze
+#konfigurace databaze
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}' #umisteni databaze
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
-# inicializace databázového objektu
+#inicializace databazoveho objektu
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -49,14 +43,14 @@ class User(UserMixin, db.Model):
 
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(150), nullable=False)  # název souboru fotografie
-    blob_url = db.Column(db.String(500), nullable=False)  # URL adresa v Azure Blob Storage
-    date_taken = db.Column(db.DateTime, nullable=False)  # datum pořízení
-    battery_level = db.Column(db.String(50), nullable=False)  # stav baterie
-    charging_status = db.Column(db.String(50), nullable=False)  # stav nabíjení
-    time_to_dead = db.Column(db.String(50), nullable=False)  # čas do vybití baterie
+    filename = db.Column(db.String(150), nullable=False)  #nazev souboru fotografie
+    blob_url = db.Column(db.String(500), nullable=False)  #URL adresa v azure blob storage
+    date_taken = db.Column(db.DateTime, nullable=False)  #datum porizení
+    battery_level = db.Column(db.String(50), nullable=False)  #stav baterie
+    charging_status = db.Column(db.String(50), nullable=False)  #stav dobijeni
+    time_to_dead = db.Column(db.String(50), nullable=False) #cas do vybiti baterky
 
-# načítání uživatelů z databáze
+#nacitani uzivatelu z db
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -67,7 +61,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        # vyhledání uživatele v databázi
+        #vyhledani uzivatele v db
         user = User.query.filter_by(username=username).first()
 
         if user and user.password_hash == password:
@@ -76,39 +70,40 @@ def login():
             return redirect(url_for('PhotoTrackCalendar'))
         else:
             flash('Invalid username or password', 'danger')
-            logging.warning("Failed login attempt for username: %s", username)
     return render_template('login.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_photo():
     if 'file' not in request.files:
-        logging.error("Chyba při odesílání dat: No file part")  # Logování chyby do souboru
+        print("Chyba při odesílání dat: No file part")  # Logování chyby do konzole
         return "No file part", 400
     file = request.files['file']
     if file.filename == '':
-        logging.error("No selected file")  # Logování chyby
         return "No selected file", 400
 
-    # Změna názvu souboru přidáním časové značky
+    #zmena nazvu-pridani casove znacky
     timestamp = datetime.now().strftime('%d-%m-%Y-%H:%M:%S')
+    #timestamp = datetime.now().strftime('%H:%M:%S')
     new_filename = f"{timestamp}_{file.filename}"
 
-    # ulozeni souboru do Azure Storage
+    #ulozeni souboru do azure storage
+    container_name = "photos"
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=new_filename)
     blob_client.upload_blob(file.read(), overwrite=False)
 
-    # ulozeni url obrazku v Azure ulozisti
+    #ulozeni url obrazku v azure ulozisti
     blob_url = blob_client.url
 
-    # získání dalších dat - stav baterie a dobíjení
+
+    #ziskani dalsich dat - stav baterie a dobijeni
     battery_level = request.form.get('battery_level', 'Unknown')
     charging_status = request.form.get('charging_status', 'Unknown')
     time_to_dead = request.form.get('time_to_dead', 'Unknown')
 
-    # ulozeni informaci do databaze
+    #ulozeni informaci do db
     date_taken = datetime.now()
 
-    # objekt Photo a jeho vlastnosti
+    #objekt Photo a jeho vlastnostni
     new_photo = Photo(
         filename=file.filename,
         blob_url=blob_url,
@@ -120,7 +115,6 @@ def upload_photo():
     db.session.add(new_photo)
     db.session.commit()
 
-    logging.info("File %s uploaded successfully.", new_filename)  # Logování úspěšného nahrání
     return "File and data uploaded successfully", 200
 
 @app.route('/get_events')
@@ -131,22 +125,28 @@ def get_events():
         events.append({
             'title': photo.filename,
             'start': photo.date_taken.strftime("%Y-%m-%dT%H:%M:%S"),
+            #'start': photo.date_taken.strftime("%dT%H:%M:%S"),
             'image': photo.blob_url,
             'battery_level': photo.battery_level,
             'charging_status': photo.charging_status,
             'time_to_dead': photo.time_to_dead
         })
-    logging.info("Fetched events: %s", events)  # Logování získaných událostí
+    print(events)  #ladici radek pro kontrolu
     return jsonify(events)
+
+@app.route('/configuration')
+@login_required
+def configuration():
+    return render_template('configuration.html')
 
 @app.route('/PhotoTrackCalendar')
 @login_required
 def PhotoTrackCalendar():
-    photos = Photo.query.all()  # Ziskani vsech fotografii z databaze
+    photos = Photo.query.all()  #ziskani vsech fotografii z databaze
     return render_template('phototrackcalendar.html', photos=photos)
 
 if __name__ == '__main__':
     with app.app_context():
-        # vytvoreni tabulek v databazi, pokud jeste neexistuji
+        #vytvoreni tabulek v databazi, pokud jeste neexistuji
         db.create_all()
     app.run(debug=True)
