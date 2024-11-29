@@ -74,5 +74,4 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'PhotoTrack'
-          slot-name: 'Production'
           
