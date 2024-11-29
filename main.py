@@ -161,8 +161,7 @@ def PhotoTrackCalendar():
     return render_template('phototrackcalendar.html', photos=photos)
 
 if __name__ == '__main__':
-    db_path = os.path.join(basedir, "instance", "users.db")
-    # Kontrola, zda databáze existuje
+    db_path = '/home/site/data/users.db'
     if not os.path.exists(db_path):
         with app.app_context():
             db.create_all()
