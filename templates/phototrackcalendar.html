@@ -1,12 +1,174 @@
+photo
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
+    <title>PhotoTrack Calendar</title>
+
+    <!-- Přidání knihovny Font Awesome pro ikonu -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- odkazy na FullCalendar CSS a JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            font-family: 'Verdana', sans-serif;
+            font-size: 2em;
+        }
+
+        #calendar {
+            max-width: 1300px;
+            margin: 40px auto;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .fc-toolbar button {
+            background-color: #2c3e50;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .fc-toolbar button:hover {
+            background-color: #2c3e50;
+        }
+
+        .fc-daygrid-day {
+            background-color: #f9f9f9;
+        }
+
+        .fc-day-today {
+            background-color: #ffebcc;
+        }
+
+        /* styl pro náhled obrázku */
+        .fc-event-title img {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <p>This is a simple HTML page displaying a "Hello, World!" message.</p>
+    <div class="container">
+        <h2>PhotoTrack Calendar</h2>
+        <div id="calendar"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today refreshButton configButt',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                customButtons: {
+                    refreshButton: {
+                        text: '↻',
+                        click: function() {
+                            // Načíst nová data
+                            fetch('/get_events')
+                                .then(response => response.json())
+                                .then(events => {
+                                    calendar.removeAllEvents(); // Odstraní staré události
+                                    calendar.addEventSource(events); // Přidá nové události
+                                })
+                                .catch(error => console.log('Error fetching events:', error));
+                        }
+                    },
+                    configButt: {
+                        text: 'Configuration Trail Camera',
+                        click: function() {
+                            window.location.href = '/configuration';
+                        }
+                    }
+                },
+                events: function(fetchInfo, successCallback, failureCallback) {
+                    // Získání událostí z Flask serveru
+                    fetch('/get_events')
+                        .then(response => response.json())
+                        .then(events => {
+                            calendar.removeAllEvents(); // Odstraní staré události
+                            successCallback(events); // Přidá nové události
+                        })
+                        .catch(error => failureCallback(error));
+                },
+                eventClick: function(info) {
+                    if (info.event.extendedProps.image) {
+                        var image = info.event.extendedProps.image;
+                        var batterylevel = info.event.extendedProps.battery_level;
+                        var chargingStatus = info.event.extendedProps.charging_status;
+                        var time_to_dead = info.event.extendedProps.time_to_dead;
+                        var dateTime = info.event.start.toLocaleString();
+                        var imgWindow = window.open("", "Image", "width=800,height=600");
+                        imgWindow.document.write(`
+                          <style>
+                            img {
+                                max-width: 80%;
+                                max-height: 80%;
+                                display: block;
+                                margin: 20px auto;
+                                border-radius: 8px;
+                                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                            }
+                            div {
+                                float: left;
+                                margin-left: 20px;
+                                font-family: 'Arial', sans-serif;
+                                font-size: 1.1em;
+                                line-height: 1.5em;
+                                color: #333;
+                            }
+                            p {
+                                margin-bottom: 10px;
+                            }
+                          </style>
+                          <img src='` + image + `' alt='Image'/>
+                          <div>
+                              <p><strong>Čas pořízení:</strong> ` + dateTime + `</p>
+                              <p><strong>Stav baterie:</strong> ` + batterylevel + `</p>
+                              <p><strong>Stav nabíjení:</strong> ` + chargingStatus + `</p>
+                              <p><strong>Zbývající čas do vybití:</strong> ` + time_to_dead + `</p>
+                          </div>
+                        `);
+                    }
+                },
+                eventContent: function(arg) {
+                    let customHtml = '';
+                    if (arg.event.extendedProps.image) {
+                        let date = new Date(arg.event.start);
+                        let options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                        let formattedDate = date.toLocaleDateString('cs-CZ', options);
+                        customHtml = '<img src="' + arg.event.extendedProps.image + ' " alt="Image" style="width: 20px; height: 20px; object-fit: cover;"/> ' + " - " + formattedDate;
+                    } else {
+                        customHtml = arg.event.title;
+                    }
+                    return { html: customHtml };
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
 </body>
 </html>
