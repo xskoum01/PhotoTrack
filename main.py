@@ -6,7 +6,6 @@ from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
 import os
 from flask_cors import CORS
-from flask import Flask, jsonify, request
 
 app = Flask(__name__) #hlavni objekt aplikace
 CORS(app, resources={r"/upload": {"origins": "*"}})
