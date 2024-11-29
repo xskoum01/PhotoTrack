@@ -6,6 +6,7 @@ from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
 import os
 from flask_cors import CORS
+from flask import Flask, jsonify, request
 
 app = Flask(__name__) #hlavni objekt aplikace
 CORS(app, resources={r"/upload": {"origins": "*"}})
@@ -138,6 +139,20 @@ def get_events():
 @login_required
 def configuration():
     return render_template('configuration.html')
+
+@app.route('/send_command', methods=['POST'])
+def send_command():
+    data = request.get_json()
+    command = data.get('command')
+
+    if not command:
+        return jsonify({'error': 'No command provided'}), 400
+
+    # zde potřeba vyřešit logiku posílaní požadavku na fotopast přes LTE modul
+
+    # Simulace zpracování příkazu
+    response = f"Command '{command}' executed successfully."
+    return jsonify({'response': response}), 200
 
 @app.route('/PhotoTrackCalendar')
 @login_required
