@@ -25,8 +25,7 @@ except ResourceExistsError:
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 #konfigurace databaze
-#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}' #umisteni databaze
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/site/data/users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}' #umisteni databaze
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
@@ -161,8 +160,6 @@ def PhotoTrackCalendar():
     return render_template('phototrackcalendar.html', photos=photos)
 
 if __name__ == '__main__':
-    db_path = '/home/site/data/users.db'
-    if not os.path.exists(db_path):
-        with app.app_context():
-            db.create_all()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
