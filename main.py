@@ -25,7 +25,7 @@ except ResourceExistsError:
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 #konfigurace databaze
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.makedirs(os.path.join(basedir, ".gitignore", "instance"), exist_ok=True)}'
+#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.makedirs(os.path.join(basedir, ".gitignore", "instance"), exist_ok=True)}'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, ".gitignore", "instance", "users.db")}' #umisteni databaze
 #app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}' #umisteni databaze
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
