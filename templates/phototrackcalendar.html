@@ -28,7 +28,7 @@
 
         #calendar {
             max-width: 1300px;
-            margin: 40px auto;
+            margin: 20px auto;
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -46,7 +46,27 @@
         }
 
         .fc-toolbar button:hover {
+            background-color: #1a242f;
+        }
+
+        .config-button-container {
+            max-width: 1300px;
+            margin: 10px auto;
+            text-align: left;
+        }
+
+        .config-button {
             background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .config-button:hover {
+            background-color: #1a242f;
         }
 
         .fc-daygrid-day {
@@ -67,6 +87,9 @@
 <body>
     <div class="container">
         <h2>PhotoTrack Calendar</h2>
+        <div class="config-button-container">
+            <button class="config-button" onclick="window.location.href='/configuration'">Configuration Trail Camera</button>
+        </div>
         <div id="calendar"></div>
     </div>
 
@@ -77,7 +100,7 @@
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
-                    left: 'prev,next today refreshButton configButt',
+                    left: 'prev,next today refreshButton',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
@@ -93,12 +116,6 @@
                                     calendar.addEventSource(events); // Přidá nové události
                                 })
                                 .catch(error => console.log('Error fetching events:', error));
-                        }
-                    },
-                    configButt: {
-                        text: 'Configuration Trail Camera',
-                        click: function() {
-                            window.location.href = '/configuration';
                         }
                     }
                 },
