@@ -136,6 +136,14 @@
                     var chargingStatus = info.event.extendedProps.charging_status;
                     var time_to_dead = info.event.extendedProps.time_to_dead;
                     var dateTime = info.event.start.toLocaleString();
+
+                    // Získání názvu souboru z URL
+                    var fileName = image.split('/').pop(); // Např. "photo123.jpg"
+                    if (!fileName.includes('.')) {
+                        fileName += ".jpg"; // Přidání přípony, pokud chybí
+                    }
+
+
                     var imgWindow = window.open("", "Image", "width=800,height=730");
                     imgWindow.document.write(`
                       <style>
@@ -178,7 +186,7 @@
                       </style>
                       <img src='` + image + `' alt='Image'/>
                       <div class="download-button">
-                           <a href="` + image + `" download>Stáhnout obrázek</a>
+                           <a href="` + image + `" download="` + fileName + `">Stáhnout obrázek</a>
                           <p><strong>Čas pořízení:</strong> ` + dateTime + `</p>
                           <p><strong>Stav baterie:</strong> ` + batterylevel + `</p>
                           <p><strong>Stav nabíjení:</strong> ` + chargingStatus + `</p>
