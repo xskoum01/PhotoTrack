@@ -136,13 +136,6 @@
                     var chargingStatus = info.event.extendedProps.charging_status;
                     var time_to_dead = info.event.extendedProps.time_to_dead;
                     var dateTime = info.event.start.toLocaleString();
-
-                    // Získání názvu souboru z URL
-                    var fileName = image.split('/').pop();
-                    if (!fileName.includes('.')) {
-                        fileName += ".jpg";  // Přidání přípony, pokud chybí
-                    }
-
                     var imgWindow = window.open("", "Image", "width=800,height=730");
                     imgWindow.document.write(`
                       <style>
@@ -185,28 +178,12 @@
                       </style>
                       <img src='` + image + `' alt='Image'/>
                       <div class="download-button">
-                           <button onclick="downloadImage('` + image + `', '` + fileName + `')">Stáhnout obrázek</button>
+                           <a href="` + image + `" download>Stáhnout obrázek</a>
                           <p><strong>Čas pořízení:</strong> ` + dateTime + `</p>
                           <p><strong>Stav baterie:</strong> ` + batterylevel + `</p>
                           <p><strong>Stav nabíjení:</strong> ` + chargingStatus + `</p>
                           <p><strong>Zbývající čas do vybití:</strong> ` + time_to_dead + `</p>
                       </div>
-
-                    <script>
-                        function downloadImage(url, filename) {
-                            fetch(url)
-                                .then(response => response.blob())
-                                .then(blob => {
-                                    var link = document.createElement('a');
-                                    link.href = URL.createObjectURL(blob);
-                                    link.download = filename;
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    document.body.removeChild(link);
-                                })
-                                .catch(error => console.error('Chyba při stahování obrázku:', error));
-                    }
-                    </script>
 
                     `);
                 }
