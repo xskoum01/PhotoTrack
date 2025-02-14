@@ -107,24 +107,9 @@ def get_events():
         blob_client = container_client.get_blob_client(blob)
         blob_properties = blob_client.get_blob_properties()
 
-        # Získání času pořízení fotky
-        date_taken_raw = blob_properties.metadata.get("date_taken", "")
-        if date_taken_raw:
-            try:
-                date_taken = datetime.strptime(date_taken_raw, '%Y-%m-%dT%H:%M:%S')
-                formatted_time = date_taken.strftime('%H:%M')  # Pouze čas pro kalendář
-                full_date = date_taken.strftime('%d. %m. %Y %H:%M:%S')  # Celé datum pro popup
-            except ValueError:
-                formatted_time = date_taken_raw  # Pokud formát nesedí, necháme původní hodnotu
-                full_date = date_taken_raw
-        else:
-            formatted_time = "Neznámý čas"
-            full_date = "Neznámé datum"
-
         events.append({
             "title": blob.name,
-            "start": formatted_time,  # Pouze HH:MM pro kalendář
-            "full_date": full_date,  # Celé datum pro popup
+            "start": blob_properties.metadata.get("date_taken", ""),
             "image": blob_client.url,
             "battery_level": blob_properties.metadata.get("battery_level", "Unknown"),
             "charging_status": blob_properties.metadata.get("charging_status", "Unknown"),
