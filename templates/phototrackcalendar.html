@@ -194,7 +194,7 @@
                     if (arg.event.extendedProps.image) {
                         let date = new Date(arg.event.start);
                         let options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                        let formattedDate = date.toLocaleDateString('cs-CZ');
+                        let formattedDate = date.toLocaleTimeString('cs-CZ', options);
                         customHtml = '<img src="' + arg.event.extendedProps.image + ' " alt="Image" style="width: 20px; height: 20px; object-fit: cover;"/> ' + " - " + formattedDate;
                     } else {
                         customHtml = arg.event.title;
