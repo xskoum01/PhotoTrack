@@ -105,19 +105,38 @@ def get_events():
     blobs = container_client.list_blobs()
 
     for blob in blobs:
-        blob_client = container_client.get_blob_client(blob)
+        blob_client = container_client.get_blob_client(blob.name)
         blob_properties = blob_client.get_blob_properties()
 
+        # Získání metadat
+        metadata = blob_properties.metadata or {}
+
+        date_taken_raw = metadata.get("date_taken", "")
+        if date_taken_raw:
+            try:
+                date_taken = datetime.strptime(date_taken_raw, '%Y-%m-%dT%H:%M:%S')
+                formatted_time = date_taken.strftime('%H:%M')  # Pouze HH:MM
+                full_date = date_taken.strftime('%d. %m. %Y %H:%M:%S')  # Celé datum
+            except ValueError:
+                formatted_time = "Neznámý čas"
+                full_date = "Neznámé datum"
+        else:
+            formatted_time = "00:00"
+            full_date = "Neznámé datum"
+
+        # Přidání dat do seznamu
         events.append({
-            "title": blob.name,
-            "start": blob_properties.metadata.get("date_taken", ""),
+            "title": formatted_time,
+            "start": formatted_time,  # Pouze HH:MM pro kalendář
+            "full_date": full_date,  # Celé datum pro popup okno
             "image": blob_client.url,
-            "battery_level": blob_properties.metadata.get("battery_level", "Unknown"),
-            "charging_status": blob_properties.metadata.get("charging_status", "Unknown"),
-            "time_to_dead": blob_properties.metadata.get("time_to_dead", "Unknown")
+            "battery_level": metadata.get("battery_level", "Unknown"),
+            "charging_status": metadata.get("charging_status", "Unknown"),
+            "time_to_dead": metadata.get("time_to_dead", "Unknown")
         })
 
     return jsonify(events)
+
 
 # Konfigurační stránka
 @app.route('/configuration')
