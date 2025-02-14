@@ -107,103 +107,97 @@
                 customButtons: {
                     refreshButton: {
                         text: '↻',
-                        click: function() {
-                            // Načíst nová data
+                        click: function () {
                             fetch('/get_events')
                                 .then(response => response.json())
                                 .then(events => {
-                                    calendar.removeAllEvents(); // Odstraní staré události
-                                    calendar.addEventSource(events); // Přidá nové události
+                                    calendar.removeAllEvents();
+                                    calendar.addEventSource(events);
                                 })
                                 .catch(error => console.log('Error fetching events:', error));
                         }
                     }
                 },
-                events: function(fetchInfo, successCallback, failureCallback) {
-                    // Získání událostí z Flask serveru
+                events: function (fetchInfo, successCallback, failureCallback) {
                     fetch('/get_events')
                         .then(response => response.json())
                         .then(events => {
-                            calendar.removeAllEvents(); // Odstraní staré události
-                            successCallback(events); // Přidá nové události
+                            calendar.removeAllEvents();
+                            successCallback(events);
                         })
                         .catch(error => failureCallback(error));
                 },
-                eventClick: function(info) {
-                if (info.event.extendedProps.image) {
-                    var image = info.event.extendedProps.image;
-                    var batterylevel = info.event.extendedProps.battery_level;
-                    var chargingStatus = info.event.extendedProps.charging_status;
-                    var time_to_dead = info.event.extendedProps.time_to_dead;
-                    var dateTime = info.event.start.toLocaleString();
+                eventClick: function (info) {
+                    if (info.event.extendedProps.image) {
+                        var imageUrl = info.event.extendedProps.image;
+                        var batterylevel = info.event.extendedProps.battery_level;
+                        var chargingStatus = info.event.extendedProps.charging_status;
+                        var time_to_dead = info.event.extendedProps.time_to_dead;
+                        var dateTime = info.event.extendedProps.full_date || "Neznámé datum";
 
-                    // Získání názvu souboru z URL
-                    var fileName = image.split('/').pop(); // Např. "photo123.jpg"
-                    if (!fileName.includes('.')) {
-                        fileName += ".jpg"; // Přidání přípony, pokud chybí
+                        // Získání názvu souboru z URL
+                        var fileName = imageUrl.split('/').pop();
+                        if (!fileName.includes('.')) {
+                            fileName += ".jpg";
+                        }
+
+                        var imgWindow = window.open("", "Image", "width=800,height=730");
+                        imgWindow.document.write(`
+                          <style>
+                            img {
+                                max-width: 80%;
+                                max-height: 80%;
+                                display: block;
+                                margin: 20px auto;
+                                border-radius: 8px;
+                                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                            }
+                            div {
+                                margin-left: 20px;
+                                font-family: 'Arial', sans-serif;
+                                font-size: 1.1em;
+                                line-height: 1.5em;
+                                color: #333;
+                            }
+                            p {
+                                margin-bottom: 10px;
+                            }
+                          </style>
+                          <img src='` + imageUrl + `' alt='Image'/>
+                          <div class="download-button">
+                               <button onclick="downloadImage('` + imageUrl + `', '` + fileName + `')">Stáhnout obrázek</button>
+                              <p><strong>Čas pořízení:</strong> ` + dateTime + `</p>
+                              <p><strong>Stav baterie:</strong> ` + batterylevel + `</p>
+                              <p><strong>Stav nabíjení:</strong> ` + chargingStatus + `</p>
+                              <p><strong>Zbývající čas do vybití:</strong> ` + time_to_dead + `</p>
+                          </div>
+
+                          <script>
+                            function downloadImage(url, filename) {
+                                fetch(url)
+                                    .then(response => response.blob())
+                                    .then(blob => {
+                                        var link = document.createElement('a');
+                                        link.href = URL.createObjectURL(blob);
+                                        link.download = filename;
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    })
+                                    .catch(error => console.error('Chyba při stahování obrázku:', error));
+                            }
+                          </script>
+                        `);
                     }
-
-
-                    var imgWindow = window.open("", "Image", "width=800,height=730");
-                    imgWindow.document.write(`
-                      <style>
-                        img {
-                            max-width: 80%;
-                            max-height: 80%;
-                            display: block;
-                            margin: 20px auto;
-                            border-radius: 8px;
-                            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-                        }
-                        div {
-                            float: left;
-                            margin-left: 20px;
-                            font-family: 'Arial', sans-serif;
-                            font-size: 1.1em;
-                            line-height: 1.5em;
-                            color: #333;
-                        }
-                        p {
-                            margin-bottom: 10px;
-                        }
-                        .download-button {
-                            margin-top: 20px;
-                            float: inherit; /* Zarovná doprava */
-                        }
-                        .download-button a {
-                            text-decoration: none;
-                            background-color: #2c3e50;
-                            color: white;
-                            padding: 10px 20px;
-                            border-radius: 5px;
-                            font-size: 1em;
-                            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-
-                        }
-                        .download-button a:hover {
-                            background-color: #1a242f;
-                        }
-                      </style>
-                      <img src='` + image + `' alt='Image'/>
-                      <div class="download-button">
-                           <a href="` + image + fileName + `" download>Stáhnout obrázek</a>
-                          <p><strong>Čas pořízení:</strong> ` + dateTime + `</p>
-                          <p><strong>Stav baterie:</strong> ` + batterylevel + `</p>
-                          <p><strong>Stav nabíjení:</strong> ` + chargingStatus + `</p>
-                          <p><strong>Zbývající čas do vybití:</strong> ` + time_to_dead + `</p>
-                      </div>
-
-                    `);
-                }
-            },
-
-                eventContent: function(arg) {
+                },
+                eventContent: function (arg) {
                     let customHtml = '';
                     if (arg.event.extendedProps.image) {
-                        let date = new Date(arg.event.start);
-                        let options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                        let formattedDate = date.toLocaleTimeString('cs-CZ');
-                        customHtml = '<img src="' + arg.event.extendedProps.image + ' " alt="Image" style="width: 20px; height: 20px; object-fit: cover;"/> ' + " - " + formattedDate;
+                        let formattedTime = arg.event.start; // Pouze HH:MM z backendu
+                        customHtml = `
+                            <img src="${arg.event.extendedProps.image}" alt="Image" style="width: 20px; height: 20px; object-fit: cover;"/>
+                            ${formattedTime}
+                        `;
                     } else {
                         customHtml = arg.event.title;
                     }
