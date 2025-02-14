@@ -83,7 +83,8 @@ def upload_photo():
     battery_level = request.form.get('battery_level', 'Unknown')
     charging_status = request.form.get('charging_status', 'Unknown')
     time_to_dead = request.form.get('time_to_dead', 'Unknown')
-    date_taken = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    #date_taken = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    date_taken = datetime.now().strftime('%H:%M:%S')
 
     # Nahrání souboru do Azure Blob Storage
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=new_filename)
