@@ -107,9 +107,23 @@ def get_events():
         blob_client = container_client.get_blob_client(blob)
         blob_properties = blob_client.get_blob_properties()
 
+        date_taken_raw = blob_properties.metadata.get("date_taken", "")
+        if date_taken_raw:
+            try:
+                date_taken = datetime.strptime(date_taken_raw, '%Y-%m-%dT%H:%M:%S')
+                formatted_time = date_taken.strftime('%H:%M')  # Pouze HH:MM
+                full_date = date_taken.strftime('%d. %m. %Y %H:%M:%S')  # Celé datum
+            except ValueError:
+                formatted_time = date_taken_raw
+                full_date = date_taken_raw
+        else:
+            formatted_time = "00:00"
+            full_date = "Neznámé datum"
+
         events.append({
             "title": blob.name,
-            "start": blob_properties.metadata.get("date_taken", ""),
+            "start": formatted_time,  # Pouze čas
+            "full_date": full_date,  # Celé datum
             "image": blob_client.url,
             "battery_level": blob_properties.metadata.get("battery_level", "Unknown"),
             "charging_status": blob_properties.metadata.get("charging_status", "Unknown"),
@@ -117,6 +131,7 @@ def get_events():
         })
 
     return jsonify(events)
+
 
 # Konfigurační stránka
 @app.route('/configuration')
