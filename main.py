@@ -75,9 +75,10 @@ def upload_photo():
     if file.filename == '':
         return "No selected file", 400
 
-    # Přidání časové značky k názvu souboru
+    # Přidání časové značky k názvu souboru a přípony .jpg
+    jpgExtension = ".jpg"
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    new_filename = f"{timestamp}_{file.filename}"
+    new_filename = f"{timestamp}_{file.filename}{jpgExtension}"
 
     # Metadata z požadavku
     battery_level = request.form.get('battery_level', 'Unknown')
