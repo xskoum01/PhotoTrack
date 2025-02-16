@@ -14,31 +14,47 @@
             color: #333;
         }
         .header-bar {
-            display: flex;
-            justify-content: center;  /* Zarovnání do středu */
-            align-items: center;
-            position: relative;  /* Umožní absolutní pozicování tlačítka */
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ddd;
-        }
+    display: flex;
+    justify-content: space-between; /* Rozdělí prvky na levou, střední a pravou stranu */
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    }
 
-        /* Zarovná reset tlačítko doprava, ale nechá nadpis uprostřed */
-        .reset-button {
-            position: absolute;
-            right: 0;
-            background-color: #c0392b;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    /* Zarovnání tlačítka "Back to Calendar" na levou stranu */
+    .back-button {
+        text-decoration: none;
+        color: #2c3e50;
+        font-size: 16px;
+        font-weight: bold;
+    }
 
-        .reset-button:hover {
-            background-color: #a93226;
-        }
+    .back-button:hover {
+        text-decoration: underline;
+    }
+
+    /* H1 je umístěné uprostřed */
+    .header-title {
+        flex-grow: 1; /* Zabere volné místo a drží se uprostřed */
+        text-align: center;
+        margin: 0;
+    }
+
+    /* Tlačítko reset je vpravo */
+    .reset-button {
+        background-color: #c0392b;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .reset-button:hover {
+        background-color: #a93226;
+    }
 
 
         .container {
