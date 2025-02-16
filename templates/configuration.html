@@ -7,197 +7,127 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-        .header-bar {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Nadpis a tlačítka nahoře */
+.header-bar {
     display: flex;
-    justify-content: space-between; /* Rozdělí prvky na levou, střední a pravou stranu */
+    justify-content: space-between;
     align-items: center;
     padding-bottom: 10px;
     border-bottom: 2px solid #ddd;
-    }
+}
 
-    /* Zarovnání tlačítka "Back to Calendar" na levou stranu */
-    .back-button {
-        text-decoration: none;
-        color: #2c3e50;
-        font-size: 16px;
-        font-weight: bold;
-    }
+/* "Back to Calendar" vlevo */
+.back-button {
+    text-decoration: none;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: bold;
+}
 
-    .back-button:hover {
-        text-decoration: underline;
-    }
+.back-button:hover {
+    text-decoration: underline;
+}
 
-    /* H1 je umístěné uprostřed */
-    .header-title {
-        flex-grow: 1; /* Zabere volné místo a drží se uprostřed */
-        text-align: center;
-        margin: 0;
-    }
+/* H1 uprostřed */
+.header-title {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+}
 
-    /* Tlačítko reset je vpravo */
-    .reset-button {
-        background-color: #c0392b;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 5px;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+/* Reset tlačítko vpravo */
+.reset-button {
+    background-color: #c0392b;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-    .reset-button:hover {
-        background-color: #a93226;
-    }
+.reset-button:hover {
+    background-color: #a93226;
+}
 
+/* Celkový kontejner */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
 
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
+/* Grid layout pro konfiguraci */
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dvě sloupce */
+    gap: 20px;
+}
 
-        /* Kontejner pro tlačítko */
-        .save-config-container {
-            position: relative; /* Relativní pozicování v rámci hlavního kontejneru */
-            display: flex;
-            justify-content: flex-end; /* Zarovná tlačítko doprava */
-            padding: 10px 20px;
-        }
+/* Tlačítka pro focení */
+.photo-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
 
-        /* Styly pro tlačítko */
-        .save-config-btn {
-            background-color: #2c3e50;
-            color: white;
-            font-weight: bold;
-            padding: 12px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+/* Checkboxy zarovnané pod sebe */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 
-        .save-config-btn:hover {
-            background-color: #1a242f;
-        }
+/* Kontejner pro tlačítko "Save Configuration" */
+.save-config-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 20px;
+}
 
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
+/* Styly pro tlačítko */
+.save-config-btn {
+    background-color: #2c3e50;
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-        .section {
-            margin-bottom: 30px;
-        }
+.save-config-btn:hover {
+    background-color: #1a242f;
+}
 
-        .section h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .section .group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            font-weight: 500;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        select, input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            background: #fff;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        button {
-            background-color: #2c3e50;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s ease-in-out;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 16px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .checkbox-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            font-weight: normal;
-        }
-
-        .status {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-top: 15px;
-            font-size: 14px;
-            color: #333;
-        }
-
-        a {
-            display: inline-block;
-            color: #2c3e50;
-            text-decoration: none;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Tlačítko pro návrat na kalendář -->
+    <div class="header-bar">
+        <a id="back-button" class="back-button" href="/PhotoTrackCalendar">← Back to Calendar</a>
+        <h1 class="header-title">Trail Camera Configuration</h1>
+        <button id="reset-device-btn" class="reset-button">Reset Device</button>
+    </div>
 
-        <div class="header-bar">
-            <a id="back-button" href="/PhotoTrackCalendar">← Back to Calendar</a>
-            <h1>Trail Camera Configuration</h1>
-            <button id="reset-device-btn" class="reset-button">Reset Device</button>
-        </div>
-
-        <!-- Section: Configuration -->
-        <div class="section">
-            <h2>Configuration</h2>
+    <!-- Section: Configuration -->
+    <div class="section">
+        <h2>Configuration</h2>
+        <div class="config-grid">
             <div class="group">
                 <label for="wakeUpTime-select">Wake up time</label>
                 <select id="wakeUpTime-select">
@@ -207,10 +137,6 @@
                     <option value="60 s">60 s</option>
                     <option value="5 min">5 min</option>
                     <option value="10 min">10 min</option>
-                    <option value="30 min">30 min</option>
-                    <option value="60 min">60 min</option>
-                    <option value="5 h">5 h</option>
-                    <option value="24 h">24 h</option>
                 </select>
             </div>
             <div class="group">
@@ -218,9 +144,7 @@
                 <select id="interval-select">
                     <option value="5 s">5 s</option>
                     <option value="10 s">10 s</option>
-                    <option value="3 s">30 s</option>
-                    <option value="60 s">1 min</option>
-                    <option value="5 m">5 min</option>
+                    <option value="30 s">30 s</option>
                 </select>
             </div>
             <div class="group">
@@ -228,57 +152,57 @@
                 <select id="resolution-select">
                     <option value="320x240">320x240 (QVGA)</option>
                     <option value="640x480">640x480 (VGA)</option>
-                    <option value="800x600">800x600 (SVGA)</option>
                     <option value="1024x768">1024x768 (XGA)</option>
-                    <option value="1280x720">1280x720 (HD)</option>
-                    <option value="1600x1200">1920x1080 (UXGA)</option>
                 </select>
             </div>
             <div class="group">
                 <label for="quality-select">Photo Quality</label>
                 <select id="quality-select">
                     <option value="Very High">Very High</option>
-                    <option value="High">High </option>
+                    <option value="High">High</option>
                     <option value="Middle">Middle</option>
                     <option value="Low">Low</option>
                 </select>
             </div>
         </div>
-
-        <!-- Section: SMS Message -->
-        <div class="section">
-            <h2>SMS Message</h2>
-            <div class="group">
-                <label for="phone-input">Phone Number</label>
-                <input type="text" id="phone-input" placeholder="+420XXXXXXXXX">
-            </div>
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="battery-checkbox"> Battery level</label>
-                <label><input type="checkbox" id="charging-checkbox"> Charging status</label>
-                <label><input type="checkbox" id="remaining-time-checkbox"> Remaining battery time</label>
-                <button id="send-sms-btn">Send</button>
-            </div>
-        </div>
-
-        <!-- Section: Take Photo -->
-        <div class="section">
-            <h2>Take photo</h2>
-            <div class="button-group">
-                <button id="take-photo-btn">Take a photo</button>
-                <button id="get-battery-btn">Get Battery Level</button>
-                <button id="get-charging-btn">Get Charging Status</button>
-                <button id="get-remaining-time-btn">Get Remaining Time</button>
-                <button id="get-signalLevel-btn">Get Signal Level</button>
-            </div>
-        </div>
-        <!-- Kontejner pro tlačítko, které bude zarovnané doprava -->
-        <div class="save-config-container">
-            <button id="save-config-btn" class="save-config-btn">Save Configuration</button>
-        </div>
-
-        <!-- Status Bar -->
-        <div class="status" id="status-bar">Application is ready.</div>
     </div>
+
+    <!-- Section: SMS Message -->
+    <div class="section">
+        <h2>SMS Message</h2>
+        <div class="group">
+            <label for="phone-input">Phone Number</label>
+            <input type="text" id="phone-input" placeholder="+420XXXXXXXXX">
+        </div>
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="battery-checkbox"> Battery level</label>
+            <label><input type="checkbox" id="charging-checkbox"> Charging status</label>
+            <label><input type="checkbox" id="remaining-time-checkbox"> Remaining battery time</label>
+        </div>
+        <button id="send-sms-btn">Send SMS</button>
+    </div>
+
+    <!-- Section: Take Photo -->
+    <div class="section">
+        <h2>Take photo</h2>
+        <div class="photo-button-group">
+            <button id="take-photo-btn">Take a photo</button>
+            <button id="get-battery-btn">Get Battery Level</button>
+            <button id="get-charging-btn">Get Charging Status</button>
+            <button id="get-remaining-time-btn">Get Remaining Time</button>
+            <button id="get-signalLevel-btn">Get Signal Level</button>
+        </div>
+    </div>
+
+    <!-- Kontejner pro tlačítko "Save Configuration" -->
+    <div class="save-config-container">
+        <button id="save-config-btn" class="save-config-btn">Save Configuration</button>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status" id="status-bar">Application is ready.</div>
+</div>
+
 
     <script>
         const statusBar = document.getElementById('status-bar');
