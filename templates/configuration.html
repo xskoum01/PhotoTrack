@@ -97,12 +97,12 @@
             border-color: #2c3e50;
         }
 
-        /* Grid pro lepší organizaci */
-       .config-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Dvě rovnoměrné sloupce */
-        gap: 20px;
-        align-items: center; /* Zarovnání položek na střed */
+        /* Oprava layoutu pro konfiguraci */
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Dvě rovnoměrné sloupce */
+            gap: 20px;
+            align-items: center; /* Zarovnání položek na střed */
         }
 
        /* Přidání stylu pro combo boxy, aby vypadaly stejně */
@@ -204,6 +204,7 @@
                         <option value="24 h">24 h</option>
                     </select>
                 </div>
+
                 <div class="group">
                     <label for="interval-select">Interval between shots</label>
                     <select id="interval-select">
@@ -212,6 +213,8 @@
                         <option value="30 s">30 s</option>
                         <option value="60 s">60 s</option>
                     </select>
+                </div>
+
                 <div class="group">
                     <label for="resolution-select">Photo Resolution</label>
                     <select id="resolution-select">
@@ -223,6 +226,7 @@
                         <option value="1600x1200">1600x1200 (UXGA)</option>
                     </select>
                 </div>
+
                 <div class="group">
                     <label for="quality-select">Photo Quality</label>
                     <select id="quality-select">
@@ -234,6 +238,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- SMS Configuration -->
         <div class="section">
