@@ -13,6 +13,17 @@
             padding: 0;
             color: #333;
         }
+        /* Reset Button - pravý horní roh */
+        .reset-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #c0392b;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
 
         .container {
             max-width: 800px;
@@ -118,6 +129,9 @@
     </style>
 </head>
 <body>
+    <div class="reset-button">
+        <button id="reset-device-btn" class="reset-button">Reset Device</button>
+    </div>
     <div class="container">
         <!-- Tlačítko pro návrat na kalendář -->
         <a id="back-button" href="/PhotoTrackCalendar">← Back to Calendar</a>
@@ -129,26 +143,26 @@
             <div class="group">
                 <label for="wakeUpTime-select">Wake up time</label>
                 <select id="wakeUpTime-select">
-                    <option value="5 s">Low</option>
-                    <option value="10 s">Middle</option>
-                    <option value="30 s">High</option>
-                    <option value="60 s">Low</option>
-                    <option value="5 min">Middle</option>
-                    <option value="10 min">High</option>
-                    <option value="30 min">Low</option>
-                    <option value="60 min">Middle</option>
-                    <option value="5 h">High</option>
-                    <option value="24 h">High</option>
+                    <option value="5 s">5 s</option>
+                    <option value="10 s">10 s</option>
+                    <option value="30 s">30 s</option>
+                    <option value="60 s">60 s</option>
+                    <option value="5 min">5 min</option>
+                    <option value="10 min">10 min</option>
+                    <option value="30 min">30 min</option>
+                    <option value="60 min">60 min</option>
+                    <option value="5 h">5 h</option>
+                    <option value="24 h">24 h</option>
                 </select>
             </div>
             <div class="group">
                 <label for="interval-select">Interval between shots</label>
                 <select id="interval-select">
-                    <option value="5 s">5 seconds</option>
-                    <option value="10 s">10 seconds</option>
-                    <option value="3 s">30 seconds</option>
-                    <option value="60 s">1 minute</option>
-                    <option value="5 m">5 minutes</option>
+                    <option value="5 s">5 s</option>
+                    <option value="10 s">10 s</option>
+                    <option value="3 s">30 s</option>
+                    <option value="60 s">1 min</option>
+                    <option value="5 m">5 min</option>
                 </select>
             </div>
             <div class="group">
