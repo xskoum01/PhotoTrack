@@ -13,16 +13,25 @@
             padding: 0;
             color: #333;
         }
-        /* Reset Button - pravý horní roh */
+        /* Header bar pro lepší zarovnání */
+        .header-bar {
+            display: flex;
+            justify-content: space-between; /* H1 doleva, tlačítko doprava */
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* Reset Button - zarovnání vpravo */
         .reset-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             background-color: #c0392b;
             color: white;
             padding: 10px 15px;
             border-radius: 5px;
             font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         .container {
@@ -132,8 +141,9 @@
     <div class="container">
         <!-- Tlačítko pro návrat na kalendář -->
         <a id="back-button" href="/PhotoTrackCalendar">← Back to Calendar</a>
-        <div class="reset-button">
-            <button id="reset-device-btn" class="reset-button">Reset Device</button>
+        <div class="header-bar">
+        <h1>Trail Camera Configuration</h1>
+        <button id="reset-device-btn" class="reset-button">Reset Device</button>
         </div>
         <h1>Trail Camera Configuration</h1>
 
