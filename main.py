@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Flask, request, flash, redirect, url_for, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
 import os
@@ -45,10 +45,63 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(150), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
 
+# Model konfigurace fotopasti
+class Configuration(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    detection_sensitivity = db.Column(db.String(50), nullable=False)
+    interval_shots = db.Column(db.String(50), nullable=False)
+    photo_resolution = db.Column(db.String(50), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=True)
+    battery_level = db.Column(db.Boolean, default=False)
+    charging_status = db.Column(db.Boolean, default=False)
+    remaining_time = db.Column(db.Boolean, default=False)
+
 # Funkce pro načtení uživatele
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+# API endpoint pro uložení konfigurace
+@app.route('/save_configuration', methods=['POST'])
+@login_required
+def save_configuration():
+    data = request.json
+    config = Configuration.query.filter_by(user_id=current_user.id).first()
+
+    if config is None:
+        config = Configuration(user_id=current_user.id)
+        db.session.add(config)
+
+    config.detection_sensitivity = data.get('detection_sensitivity', 'Low')
+    config.interval_shots = data.get('interval_shots', '5 seconds')
+    config.photo_resolution = data.get('photo_resolution', '160x120 (QQVGA)')
+    config.phone_number = data.get('phone_number', '')
+    config.battery_level = data.get('battery_level', False)
+    config.charging_status = data.get('charging_status', False)
+    config.remaining_time = data.get('remaining_time', False)
+
+    db.session.commit()
+    return jsonify({"message": "Configuration saved successfully"}), 200
+
+# API endpoint pro načtení konfigurace
+@app.route('/get_configuration', methods=['GET'])
+@login_required
+def get_configuration():
+    config = Configuration.query.filter_by(user_id=current_user.id).first()
+
+    if not config:
+        return jsonify({"message": "No configuration found"}), 404
+
+    return jsonify({
+        "detection_sensitivity": config.detection_sensitivity,
+        "interval_shots": config.interval_shots,
+        "photo_resolution": config.photo_resolution,
+        "phone_number": config.phone_number,
+        "battery_level": config.battery_level,
+        "charging_status": config.charging_status,
+        "remaining_time": config.remaining_time
+    })
 
 # Přihlašovací stránka
 @app.route('/', methods=['GET', 'POST'])

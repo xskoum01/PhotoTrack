@@ -127,33 +127,39 @@
         <div class="section">
             <h2>Configuration</h2>
             <div class="group">
-                <label for="sensitivity-select">Detection Sensitivity</label>
-                <select id="sensitivity-select">
-                    <option value="low">Low</option>
-                    <option value="middle">Middle</option>
-                    <option value="high">High</option>
+                <label for="wakeUpTime-select">Wake up time</label>
+                <select id="wakeUpTime-select">
+                    <option value="5 s">Low</option>
+                    <option value="10 s">Middle</option>
+                    <option value="30 s">High</option>
+                    <option value="60 s">Low</option>
+                    <option value="5 min">Middle</option>
+                    <option value="10 min">High</option>
+                    <option value="30 min">Low</option>
+                    <option value="60 min">Middle</option>
+                    <option value="5 h">High</option>
+                    <option value="24 h">High</option>
                 </select>
             </div>
             <div class="group">
                 <label for="interval-select">Interval between shots</label>
                 <select id="interval-select">
-                    <option value="5s">5 seconds</option>
-                    <option value="10s">10 seconds</option>
-                    <option value="30s">30 seconds</option>
-                    <option value="1m">1 minute</option>
-                    <option value="5m">5 minutes</option>
+                    <option value="5 s">5 seconds</option>
+                    <option value="10 s">10 seconds</option>
+                    <option value="3 s">30 seconds</option>
+                    <option value="60 s">1 minute</option>
+                    <option value="5 m">5 minutes</option>
                 </select>
             </div>
             <div class="group">
                 <label for="resolution-select">Photo Resolution</label>
                 <select id="resolution-select">
-                    <option value="160x120">160x120 (QQVGA)</option>
                     <option value="320x240">320x240 (QVGA)</option>
                     <option value="640x480">640x480 (VGA)</option>
                     <option value="800x600">800x600 (SVGA)</option>
                     <option value="1024x768">1024x768 (XGA)</option>
                     <option value="1280x720">1280x720 (HD)</option>
-                    <option value="1920x1080">1920x1080 (FHD)</option>
+                    <option value="1600x1200">1920x1080 (UXGA)</option>
                 </select>
             </div>
         </div>
@@ -221,8 +227,8 @@
         });
 
         // Event listeners for dropdowns and checkboxes
-        document.getElementById('sensitivity-select').addEventListener('change', (e) => {
-            updateStatus(`Sensitivity set to ${e.target.value}`);
+        document.getElementById('wakeUpTime-select').addEventListener('change', (e) => {
+            updateStatus(`wakeUpTime set to ${e.target.value}`);
         });
 
         document.getElementById('interval-select').addEventListener('change', (e) => {
