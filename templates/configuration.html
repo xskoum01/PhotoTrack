@@ -66,6 +66,31 @@
             padding: 20px;
         }
 
+        /* Kontejner pro tlačítko */
+        .save-config-container {
+            position: relative; /* Relativní pozicování v rámci hlavního kontejneru */
+            display: flex;
+            justify-content: flex-end; /* Zarovná tlačítko doprava */
+            padding: 10px 20px;
+        }
+
+        /* Styly pro tlačítko */
+        .save-config-btn {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .save-config-btn:hover {
+            background-color: #1a242f;
+        }
+
         h1 {
             text-align: center;
             color: #2c3e50;
@@ -246,6 +271,10 @@
                 <button id="get-charging-btn">Get Charging Status</button>
                 <button id="get-remaining-time-btn">Get Remaining Time</button>
             </div>
+        </div>
+        <!-- Kontejner pro tlačítko, které bude zarovnané doprava -->
+        <div class="save-config-container">
+            <button id="save-config-btn" class="save-config-btn">Save Configuration</button>
         </div>
 
         <!-- Status Bar -->
