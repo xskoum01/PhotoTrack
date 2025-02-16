@@ -146,15 +146,13 @@
             justify-content: flex-end;
         }
 
+        /* Status Bar umístěný dole vlevo */
         .status {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
             margin-top: 15px;
             font-size: 14px;
             color: #333;
-            text-align: center;
+            text-align: left;
+            padding-left: 10px;
         }
     </style>
 </head>
@@ -221,6 +219,7 @@
                 <button id="take-photo-btn" class="action-button">Take a photo</button>
                 <button id="get-battery-btn" class="action-button">Get Battery Level</button>
                 <button id="get-charging-btn" class="action-button">Get Charging Status</button>
+                <button id="get-remaining-time-btn" class="action-button">Get Remaining Time</button>
             </div>
         </div>
 
@@ -231,12 +230,10 @@
         <div class="save-config-container">
             <button id="save-config-btn" class="action-button">Save Configuration</button>
         </div>
-
-        <!-- Status Bar -->
-        <div class="status" id="status-bar">Application is ready.</div>
     </div>
 
-
+    <!-- Status Bar -->
+    <div class="status" id="status-bar">Application is ready.</div>
 
     <script>
         const statusBar = document.getElementById('status-bar');
