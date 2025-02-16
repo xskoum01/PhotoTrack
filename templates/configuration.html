@@ -98,10 +98,29 @@
         }
 
         /* Grid pro lepší organizaci */
-        .config-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+       .config-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Dvě rovnoměrné sloupce */
+        gap: 20px;
+        align-items: center; /* Zarovnání položek na střed */
+        }
+
+       /* Přidání stylu pro combo boxy, aby vypadaly stejně */
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            color: #333;
+            appearance: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        select:hover {
+        border-color: #2c3e50;
         }
 
         .checkbox-group {
