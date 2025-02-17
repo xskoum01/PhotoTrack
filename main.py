@@ -73,7 +73,7 @@ def get_configuration():
         "wakeUp_time": config.wakeUp_time,
         "interval_shots": config.interval_shots,
         "photo_resolution": config.photo_resolution,
-        "quality": config.photo_quality,
+        "photo_quality": config.photo_quality,
         "phone_number": config.phone_number,
     })
 
@@ -95,7 +95,7 @@ def save_configuration():
     config.wakeUp_time = data.get('wakeUp_time', '60 s')
     config.interval_shots = data.get('interval_shots', '5 seconds')
     config.photo_resolution = data.get('photo_resolution', '1024x768')
-    config.photo_quality = data.get('quality', 'High')
+    config.photo_quality = data.get('photo_quality', 'High')
     config.phone_number = data.get('phone_number', '+420735009345')
 
     db.session.commit()
