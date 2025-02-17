@@ -35,8 +35,8 @@ except ResourceExistsError:
 
 # SQL databaze
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("AZURE_SQL_CONNECTION_STRING")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your_secret_key'
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SECRET_KEY'] = 'your_secret_key'
 
 # Inicializace databáze a Flask-Login
 db = SQLAlchemy(app)
