@@ -28,8 +28,13 @@ except ResourceExistsError:
     pass
 
 # Konfigurace pro SQLite databázi (pro přihlašování)
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}'
+#basedir = os.path.abspath(os.path.dirname(__file__))
+#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}'
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SECRET_KEY'] = 'your_secret_key'
+
+# SQL databaze
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("AZURE_SQL_CONNECTION_STRING")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key'
 
