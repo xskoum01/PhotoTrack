@@ -70,7 +70,7 @@ def get_configuration():
         return jsonify({"message": "No configuration found"}), 404
 
     return jsonify({
-        "detection_sensitivity": config.wakeUp_time,
+        "wakeUp_time": config.wakeUp_time,
         "interval_shots": config.interval_shots,
         "photo_resolution": config.photo_resolution,
         "quality": config.photo_quality,
@@ -92,7 +92,7 @@ def save_configuration():
         db.session.add(config)
 
     # Uložení hodnot do databáze
-    config.wakeUp_time = data.get('wwakeUp_time', '60 s')
+    config.wakeUp_time = data.get('wakeUp_time', '60 s')
     config.interval_shots = data.get('interval_shots', '5 seconds')
     config.photo_resolution = data.get('photo_resolution', '1024x768')
     config.photo_quality = data.get('quality', 'High')
