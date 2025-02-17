@@ -322,6 +322,35 @@
             statusBar.textContent = message;
         }
 
+        // Save config to SQL via API /save_configuration
+        document.getElementById("save-config-btn").addEventListener("click", function() {
+            let configData = {
+                wakeUp_time: document.getElementById("wakeUpTime-select").value,
+                interval_shots: document.getElementById("interval-select").value,
+                photo_resolution: document.getElementById("resolution-select").value,
+                quality: document.getElementById("quality-select").value,
+                phone_number: document.getElementById("phone-input").value,
+            };
+
+            fetch("/save_configuration", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(configData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Response:", data);
+                alert("Configuration saved successfully!");
+            })
+            .catch(error => {
+                console.error("Error saving config:", error);
+                alert("Error saving configuration.");
+            });
+        });
+
+
         // Event listeners for buttons
         document.getElementById('send-sms-btn').addEventListener('click', () => {
             updateStatus('Sending SMS...');
