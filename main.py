@@ -81,26 +81,29 @@ def get_configuration():
 @app.route('/save_configuration', methods=['POST'])
 @login_required
 def save_configuration():
-    data = request.json  # JSON od uživatele
+    try:
+        data = request.json
+        print(f"Received JSON: {data}")  # Debugging
 
-    # Získání konfigurace pro aktuálního uživatele
-    config = Configuration.query.filter_by(user_id=current_user.id).first()
+        config = Configuration.query.filter_by(user_id=current_user.id).first()
 
-    # Pokud neexistuje, vytvoříme nový záznam
-    if config is None:
-        config = Configuration(user_id=current_user.id)
-        db.session.add(config)
+        if config is None:
+            config = Configuration(user_id=current_user.id)
+            db.session.add(config)
 
-    # Uložení hodnot do databáze
-    config.wakeUp_time = data.get('wakeUp_time', '60 s')
-    config.interval_shots = data.get('interval_shots', '5 seconds')
-    config.photo_resolution = data.get('photo_resolution', '1024x768')
-    config.photo_quality = data.get('photo_quality', 'High')
-    config.phone_number = data.get('phone_number', '+420735009345')
+        config.wakeUp_time = data.get('wakeUp_time', '60 s')
+        config.interval_shots = data.get('interval_shots', '5 s')
+        config.photo_resolution = data.get('photo_resolution', '1024x768')
+        config.photo_quality = data.get('photo_quality', 'High')
+        config.phone_number = data.get('phone_number', '+420735009345')
 
-    db.session.commit()
+        db.session.commit()
+        return jsonify({"message": "Configuration saved successfully"}), 200
 
-    return jsonify({"message": "Configuration saved successfully"}), 200
+    except Exception as e:
+        print(f"Error: {str(e)}")  # Logování chyby do konzole
+        return jsonify({"error": "Error saving configuration", "details": str(e)}), 500
+
 
 
 # Přihlašovací stránka
