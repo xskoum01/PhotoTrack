@@ -36,20 +36,14 @@ except ResourceExistsError:
 #app.config['SECRET_KEY'] = 'your_secret_key'
 
 # SQL databaze
-# Získání připojovacího řetězce z proměnných prostředí
-connection_string = os.environ.get("AZURE_SQL_CONNECTION_STRING")
+# Načtení připojovacího řetězce z prostředí
+raw_connection_string = os.environ.get("AZURE_SQL_CONNECTION_STRING")
 
-# Ujistíme se, že connection_string není None
-if not connection_string:
-    raise ValueError("❌ Chyba: AZURE_SQL_CONNECTION_STRING není nastaven!")
+# Zakódování parametrů pro SQLAlchemy
+encoded_connection_string = urllib.parse.quote_plus(raw_connection_string)
 
-# Zakódování parametrů do správného formátu pro SQLAlchemy
-encoded_connection_string = urllib.parse.quote_plus(connection_string)
-
-# Použití správného formátu URI pro SQLAlchemy s PyODBC
+# Správný formát pro SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your_secret_key'
 
 
 # Inicializace databáze a Flask-Login
