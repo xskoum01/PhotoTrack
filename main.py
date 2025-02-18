@@ -30,7 +30,7 @@ except ResourceExistsError:
     pass
 
 # Konfigurace pro SQLite databázi (pro přihlašování)
-basedir = os.path.abspath(os.path.dirname(__file__))
+#basedir = os.path.abspath(os.path.dirname(__file__))
 #app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}'
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #app.config['SECRET_KEY'] = 'your_secret_key'
@@ -39,11 +39,17 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Získání připojovacího řetězce z proměnných prostředí
 connection_string = os.environ.get("AZURE_SQL_CONNECTION_STRING")
 
+# Ujistíme se, že connection_string není None
+if not connection_string:
+    raise ValueError("❌ Chyba: AZURE_SQL_CONNECTION_STRING není nastaven!")
+
 # Zakódování parametrů do správného formátu pro SQLAlchemy
 encoded_connection_string = urllib.parse.quote_plus(connection_string)
 
 # Použití správného formátu URI pro SQLAlchemy s PyODBC
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'your_secret_key'
 
 
 # Inicializace databáze a Flask-Login
