@@ -5,6 +5,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, cur
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
 import os
+import urllib.parse
 import pyodbc
 from flask_cors import CORS
 
@@ -35,9 +36,15 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 #app.config['SECRET_KEY'] = 'your_secret_key'
 
 # SQL databaze
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("AZURE_SQL_CONNECTION_STRING")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'your_secret_key'
+# Získání připojovacího řetězce z proměnných prostředí
+connection_string = os.environ.get("AZURE_SQL_CONNECTION_STRING")
+
+# Zakódování parametrů do správného formátu pro SQLAlchemy
+encoded_connection_string = urllib.parse.quote_plus(connection_string)
+
+# Použití správného formátu URI pro SQLAlchemy s PyODBC
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
+
 
 # Inicializace databáze a Flask-Login
 db = SQLAlchemy(app)
