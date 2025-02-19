@@ -43,8 +43,7 @@ raw_connection_string = os.environ.get("AZURE_SQL_CONNECTION_STRING")
 encoded_connection_string = urllib.parse.quote_plus(raw_connection_string)
 
 # Správný formát pro SQLAlchemy
-#app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
-app.config['SQLALCHEMY_DATABASE_URI'] = f"={encoded_connection_string}"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
 
 
 
