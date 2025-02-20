@@ -6,7 +6,7 @@ from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
 import os
 import urllib.parse
-import pyodbc
+
 from flask_cors import CORS
 
 # Flask aplikace
@@ -30,20 +30,20 @@ except ResourceExistsError:
     pass
 
 # Konfigurace pro SQLite databázi (pro přihlašování)
-#basedir = os.path.abspath(os.path.dirname(__file__))
-#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}'
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#app.config['SECRET_KEY'] = 'your_secret_key'
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(basedir, "instance", "users.db")}'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'your_secret_key'
 
 # SQL databaze
 # Načtení připojovacího řetězce z prostředí
-raw_connection_string = os.environ.get("AZURE_SQL_CONNECTION_STRING")
+#raw_connection_string = os.environ.get("AZURE_SQL_CONNECTION_STRING")
 
 # Zakódování parametrů pro SQLAlchemy
-encoded_connection_string = urllib.parse.quote_plus(raw_connection_string)
+#encoded_connection_string = urllib.parse.quote_plus(raw_connection_string)
 
 # Správný formát pro SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
+#app.config['SQLALCHEMY_DATABASE_URI'] = f"mssql+pyodbc:///?odbc_connect={encoded_connection_string}"
 
 
 
