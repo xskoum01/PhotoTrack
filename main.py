@@ -76,7 +76,6 @@ def load_user(user_id):
 
 # API endpoint pro načtení konfigurace
 @app.route('/get_configuration', methods=['GET'])
-@login_required
 def get_configuration():
     config = Configuration.query.filter_by(user_id=current_user.id).first()
 
