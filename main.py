@@ -29,19 +29,24 @@ except ResourceExistsError:
     pass
 
 # 🔹 Nastavení Azure SQL Database připojení
-server_name = 'phototrack-server.database.windows.net'
-database_name = 'PhotoTrackDB'
-driver_name = '{ODBC Driver 18 for SQL Server}'
+server_name = "phototrack-server.database.windows.net"
+database_name = "PhotoTrackDB"
+driver_name = "ODBC Driver 18 for SQL Server"
 
 # 🔹 Vytvoření connection stringu
-connection_string = 'Driver={};Server=tcp:{}.database.windows.net,1433;Database={};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30'.format(driver_name, server_name, database_name)
+connection_string = f"Driver={driver_name};Server=tcp:{server_name},1433;Database={database_name};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30"
 
 # 🔹 Přidání tokenu pro Azure Managed Identity (Entra ID)
 credential = DefaultAzureCredential()
 
 def get_token():
-    token_bytes = credential.get_token("https://database.windows.net/.default").token.encode("UTF-16-LE")
-    return struct.pack(f'<I{len(token_bytes)}s', len(token_bytes), token_bytes)
+    """ Získání autentizačního tokenu pro přístup k Azure SQL """
+    try:
+        token_bytes = credential.get_token("https://database.windows.net/.default").token.encode("UTF-16-LE")
+        return struct.pack(f"<I{len(token_bytes)}s", len(token_bytes), token_bytes)
+    except Exception as e:
+        print(f"❌ Chyba při získávání tokenu: {e}")
+        return None
 
 # 🔹 Vytvoření SQLAlchemy engine
 params = urllib.parse.quote_plus(connection_string)
@@ -51,7 +56,9 @@ engine = create_engine(f"mssql+pyodbc:///?odbc_connect={params}")
 @event.listens_for(engine, "do_connect")
 def provide_token(dialect, conn_rec, cargs, cparams):
     SQL_COPT_SS_ACCESS_TOKEN = 1256  # Definováno Microsoftem
-    cparams["attrs_before"] = {SQL_COPT_SS_ACCESS_TOKEN: get_token()}
+    token = get_token()
+    if token:
+        cparams["attrs_before"] = {SQL_COPT_SS_ACCESS_TOKEN: token}
 
 # 🔹 Inicializace session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -60,15 +67,14 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # 🔹 Inicializace Flask-Login
-app.config["SECRET_KEY"] = "your_secret_key"
+app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "your_secret_key")
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
 # 🔹 Modely databáze
-
 class User(UserMixin, Base):
-    __tablename__ = "User"  # Odpovídá tabulce v Azure SQL
+    __tablename__ = "User"
     id = Column(Integer, primary_key=True)
     username = Column(String(150), unique=True, nullable=False)
     password_hash = Column(String(128), nullable=False)
@@ -124,6 +130,7 @@ def save_configuration():
             session.commit()
         return jsonify({"message": "Configuration saved successfully"}), 200
     except Exception as e:
+        print(f"❌ Chyba při ukládání konfigurace: {e}")
         return jsonify({"error": "Error saving configuration", "details": str(e)}), 500
 
 # 🔹 Přihlašovací stránka
@@ -137,7 +144,7 @@ def login():
             if user and user.password_hash == password:
                 login_user(user)
                 flash("Successfully logged in", "Success")
-                return redirect(url_for("PhotoTrackCalendar"))
+                return redirect(url_for("get_configuration"))
             else:
                 flash("Invalid username or password", "danger")
     return render_template("login.html")
@@ -146,4 +153,4 @@ def login():
 if __name__ == "__main__":
     with engine.begin() as conn:
         Base.metadata.create_all(conn)  # Vytvoření tabulek v Azure SQL
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
