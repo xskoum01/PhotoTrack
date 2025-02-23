@@ -16,7 +16,7 @@ from azure.core.exceptions import ResourceExistsError
 app = Flask(__name__)
 CORS(app, resources={r"/upload": {"origins": "*"}})
 
-CONFIG_SECRET = os.environ.get('CONFIG_SECRET')
+CONFIG_SECRET = os.environ.get("CONFIG_SECRET")
 
 # 🔹 Připojení k Azure Blob Storage
 blob_connect_str = os.environ.get("AZURE_BLOB_CONNECTION_STRING")
