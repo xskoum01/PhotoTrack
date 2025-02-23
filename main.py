@@ -31,13 +31,10 @@ except ResourceExistsError:
 # 🔹 Nastavení Azure SQL Database připojení
 server_name = "phototrack-server.database.windows.net"
 database_name = "PhotoTrackDB"
-driver = "ODBC Driver 18 for SQL Server"
+driver_name = "ODBC Driver 18 for SQL Server"
 
 # 🔹 Vytvoření connection stringu
-connection_string = (
-    f"Driver={driver};Server=tcp:{server_name},1433;Database={database_name};"
-    "Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30"
-)
+connection_string = 'Driver={};Server=tcp:{}.database.windows.net,1433;Database={};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30'.format(driver_name, server_name, database_name)
 
 # 🔹 Přidání tokenu pro Azure Managed Identity (Entra ID)
 credential = DefaultAzureCredential()
