@@ -11,7 +11,6 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
-from werkzeug.security import check_password_hash
 
 # Flask aplikace
 app = Flask(__name__)
@@ -142,7 +141,7 @@ def login():
         password = request.form["password"]
         with SessionLocal() as session:
             user = session.query(User).filter_by(username=username).first()
-            if user and check_password_hash(user.password_hash, password):
+            if user and user.password_hash == password:
                 login_user(user)
                 flash("Successfully logged in", "Success")
                 return redirect(url_for("phototrackcalendar.html"))
