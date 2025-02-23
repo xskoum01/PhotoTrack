@@ -145,7 +145,7 @@ def login():
             if user and check_password_hash(user.password_hash, password):
                 login_user(user)
                 flash("Successfully logged in", "Success")
-                return redirect(url_for("PhotoTrackCalendar"))
+                return redirect(url_for("phototrackcalendar.html"))
             else:
                 flash("Invalid username or password", "danger")
     return render_template("login.html")
