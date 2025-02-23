@@ -144,7 +144,7 @@ def login():
             if user and user.password_hash == password:
                 login_user(user)
                 flash("Successfully logged in", "Success")
-                return redirect(url_for("get_configuration"))
+                return redirect(url_for("PhotoTrackCalendar"))
             else:
                 flash("Invalid username or password", "danger")
     return render_template("login.html")
