@@ -149,6 +149,70 @@ def login():
                 flash("Invalid username or password", "danger")
     return render_template("login.html")
 
+# Upload obrázku a metadat
+@app.route('/upload', methods=['POST'])
+def upload_photo():
+    if 'file' not in request.files:
+        return "No file part", 400
+    file = request.files['file']
+    if file.filename == '':
+        return "No selected file", 400
+
+    # Přidání časové značky k názvu souboru a přípony .jpg
+    jpgExtension = ".jpg"
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    new_filename = f"{timestamp}_{file.filename}{jpgExtension}"
+
+    # Metadata z požadavku
+    battery_level = request.form.get('battery_level', 'Unknown')
+    charging_status = request.form.get('charging_status', 'Unknown')
+    time_to_dead = request.form.get('time_to_dead', 'Unknown')
+    date_taken = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+
+    # Nahrání souboru do Azure Blob Storage
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=new_filename)
+    blob_client.upload_blob(file.read(), overwrite=False, metadata={
+        "date_taken": date_taken,
+        "battery_level": battery_level,
+        "charging_status": charging_status,
+        "time_to_dead": time_to_dead
+    })
+    return "File and metadata uploaded successfully", 200
+
+# Načítání fotografií a metadat
+@app.route('/get_events', methods=['GET'])
+@login_required
+def get_events():
+    events = []
+    blobs = container_client.list_blobs()
+
+    for blob in blobs:
+        blob_client = container_client.get_blob_client(blob)
+        blob_properties = blob_client.get_blob_properties()
+
+        events.append({
+            "title": blob.name,
+            "start": blob_properties.metadata.get("date_taken", ""),
+            "image": blob_client.url,
+            "battery_level": blob_properties.metadata.get("battery_level", "Unknown"),
+            "charging_status": blob_properties.metadata.get("charging_status", "Unknown"),
+            "time_to_dead": blob_properties.metadata.get("time_to_dead", "Unknown")
+        })
+
+    return jsonify(events)
+
+# Konfigurační stránka
+@app.route('/configuration')
+@login_required
+def configuration():
+    return render_template('configuration.html')
+
+# Kalendářová stránka
+@app.route('/PhotoTrackCalendar')
+@login_required
+def PhotoTrackCalendar():
+    return render_template('phototrackcalendar.html')
+
 # 🔹 Spuštění aplikace a inicializace databáze
 if __name__ == "__main__":
     with engine.begin() as conn:
