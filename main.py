@@ -16,6 +16,8 @@ from azure.core.exceptions import ResourceExistsError
 app = Flask(__name__)
 CORS(app, resources={r"/upload": {"origins": "*"}})
 
+CONFIG_SECRET = os.environ.get('CONFIG_SECRET')
+
 # 🔹 Připojení k Azure Blob Storage
 blob_connect_str = os.environ.get("AZURE_BLOB_CONNECTION_STRING")
 blob_service_client = BlobServiceClient.from_connection_string(blob_connect_str)
@@ -98,8 +100,12 @@ def load_user(user_id):
 # 🔹 API endpoint pro načtení konfigurace
 @app.route("/get_configuration", methods=["GET"])
 def get_configuration():
+    token = request.headers.get("X-Api-Key")
+    if token != CONFIG_SECRET:
+        return jsonify({"error": "Unauthorized"}), 403  # Neoprávněný přístup
+
     with SessionLocal() as session:
-        config = session.query(Configuration).filter_by(user_id=current_user.id).first()
+        config = session.query(Configuration).filter_by(user_id=1).first()
         if not config:
             return jsonify({"message": "No configuration found"}), 404
         return jsonify({
