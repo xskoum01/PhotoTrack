@@ -109,13 +109,13 @@ def get_configuration():
         if not config:
             return jsonify({"message": "No update"}), 200
 
-        response_data = jsonify({
+        response_data = {
             "wakeUp_time": config.wakeUp_time,
             "interval_shots": config.interval_shots,
             "photo_resolution": config.photo_resolution,
             "photo_quality": config.photo_quality,
             "phone_number": config.phone_number,
-        })
+        }
 
         # Odstraníme konfiguraci z SQL
         session.delete(config)
