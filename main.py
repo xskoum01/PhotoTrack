@@ -107,14 +107,21 @@ def get_configuration():
     with SessionLocal() as session:
         config = session.query(Configuration).filter_by(user_id=1).first()
         if not config:
-            return jsonify({"message": "No configuration found"}), 404
-        return jsonify({
+            return jsonify({"message": "No update"}), 200
+
+        response_data = jsonify({
             "wakeUp_time": config.wakeUp_time,
             "interval_shots": config.interval_shots,
             "photo_resolution": config.photo_resolution,
             "photo_quality": config.photo_quality,
             "phone_number": config.phone_number,
         })
+
+        # Odstraníme konfiguraci z SQL
+        session.delete(config)
+        session.commit()
+
+        return jsonify(response_data), 200  # Vrátíme konfiguraci
 
 # 🔹 API endpoint pro uložení konfigurace
 @app.route("/save_configuration", methods=["POST"])
