@@ -172,10 +172,6 @@
             background-color: #1a242f;
         }
 
-        .sms-button {
-
-        }
-
         /* Oddělující čára */
         .divider {
             border-top: 2px solid #ddd;
@@ -288,17 +284,14 @@
                 <label><input type="checkbox" id="charging-checkbox"> Charging status</label>
                 <label><input type="checkbox" id="remaining-time-checkbox"> Remaining battery time</label>
             </div>
-                <button id="send-sms-btn" class="action-button">Send SMS</button>
+                <button id="send-sms-btn" class="action-button">Send info SMS</button>
         </div>
 
         <!-- Camera Controls -->
         <div class="section">
-            <h2>Camera Controls</h2>
+            <h2>Camera Control</h2>
             <div class="photo-button-group">
                 <button id="take-photo-btn" class="action-button">Take a photo</button>
-                <button id="get-battery-btn" class="action-button">Get Battery Level</button>
-                <button id="get-charging-btn" class="action-button">Get Charging Status</button>
-                <button id="get-remaining-time-btn" class="action-button">Get Remaining Time</button>
             </div>
         </div>
 
@@ -354,23 +347,12 @@
         // Event listeners for buttons
         document.getElementById('send-sms-btn').addEventListener('click', () => {
             updateStatus('Sending SMS...');
-            // pozdeji dodelat fetch(url) kterou zpracuji v backendu v mainu u vsech tady veci
+            let phoneNumber = document.getElementById("phone-input").value
+
         });
 
         document.getElementById('take-photo-btn').addEventListener('click', () => {
             updateStatus('Taking a photo...');
-        });
-
-        document.getElementById('get-battery-btn').addEventListener('click', () => {
-            updateStatus('Fetching battery level...');
-        });
-
-        document.getElementById('get-charging-btn').addEventListener('click', () => {
-            updateStatus('Fetching charging status...');
-        });
-
-        document.getElementById('get-remaining-time-btn').addEventListener('click', () => {
-            updateStatus('Fetching remaining battery time...');
         });
 
         // Event listeners for dropdowns and checkboxes
@@ -384,18 +366,6 @@
 
         document.getElementById('resolution-select').addEventListener('change', (e) => {
             updateStatus(`Resolution set to ${e.target.value}`);
-        });
-
-        document.getElementById('battery-checkbox').addEventListener('change', (e) => {
-            updateStatus(e.target.checked ? 'Battery level included in SMS.' : 'Battery level excluded from SMS.');
-        });
-
-        document.getElementById('charging-checkbox').addEventListener('change', (e) => {
-            updateStatus(e.target.checked ? 'Charging status included in SMS.' : 'Charging status excluded from SMS.');
-        });
-
-        document.getElementById('remaining-time-checkbox').addEventListener('change', (e) => {
-            updateStatus(e.target.checked ? 'Remaining time included in SMS.' : 'Remaining time excluded from SMS.');
         });
     </script>
 </body>
