@@ -271,6 +271,7 @@ def reset_camera():
 
     return jsonify({"message": "Camera reset request saved"}), 200
 
+
 @app.route("/get_commands", methods=["GET"])
 def get_commands():
     token = request.headers.get("X-Api-Key")
@@ -278,25 +279,33 @@ def get_commands():
         return jsonify({"error": "Unauthorized"}), 403  # Neoprávněný přístup
 
     with SessionLocal() as session:
-        command = session.query(CameraActions).filter_by(user_id=1).first()
-        if not command:
-            return jsonify({"message": "No update"}), 200
+        try:
+            command = session.query(CameraActions).filter_by(user_id=1).first()
+            if not command:
+                return jsonify({"message": "No update"}), 200
 
-        response = {
-            "send_sms": command.send_sms,
-            "phone_number": command.phone_number if command.send_sms else None,
-            "take_photo": command.take_photo,
-            "reset_trailCamera": command.reset_trailCamera
-        }
+            # ✅ Pokud žádný příkaz není aktivní, vrátíme "No update"
+            if not (command.send_sms or command.take_photo or command.reset_trailCamera):
+                return jsonify({"message": "No update"}), 200
 
-        # ✅ Po úspěšném přečtení resetujeme hodnoty na False/NULL
-        command.send_sms = False
-        command.take_photo = False
-        command.reset_trailCamera = False
-        command.phone_number = None
-        session.commit()
+            response = {
+                "send_sms": command.send_sms,
+                "phone_number": command.phone_number if command.send_sms else None,
+                "take_photo": command.take_photo,
+                "reset_trailCamera": command.reset_trailCamera
+            }
 
-        return jsonify(response)
+            # ✅ Po úspěšném přečtení resetujeme hodnoty na False/NULL
+            command.send_sms = False
+            command.take_photo = False
+            command.reset_trailCamera = False
+            command.phone_number = None
+            session.commit()
+
+            return jsonify(response)
+
+        except Exception as e:
+            return jsonify({"error": "Internal server error"}), 500
 
 
 # Konfigurační stránka
