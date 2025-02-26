@@ -280,7 +280,7 @@ def get_commands():
 
     with SessionLocal() as session:
         try:
-            command = session.query(CameraActions).filter_by(user_id=1).first()
+            command = session.query(CameraActions).filter_by(id=1).first()
             if not command:
                 return jsonify({"message": "No update"}), 200
 
