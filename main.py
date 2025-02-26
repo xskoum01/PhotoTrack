@@ -93,7 +93,7 @@ class Configuration(Base):
     phone_number = Column(String(20), nullable=True)
 
 class CameraActions(Base):
-    __tablename__ = "camera_actions"
+    __tablename__ = "CameraActions"
     id = Column(Integer, primary_key=True)
     send_sms = Column(Boolean, default=False)
     phone_number = Column(String(20), nullable=True)
@@ -270,6 +270,33 @@ def reset_camera():
         session.commit()
 
     return jsonify({"message": "Camera reset request saved"}), 200
+
+@app.route("/get_commands", methods=["GET"])
+def get_commands():
+    token = request.headers.get("X-Api-Key")
+    if token != CONFIG_SECRET:
+        return jsonify({"error": "Unauthorized"}), 403  # Neoprávněný přístup
+
+    with SessionLocal() as session:
+        command = session.query(CameraActions).filter_by(user_id=1).first()
+        if not command:
+            return jsonify({"message": "No update"}), 200
+
+        response = {
+            "send_sms": command.send_sms,
+            "phone_number": command.phone_number if command.send_sms else None,
+            "take_photo": command.take_photo,
+            "reset_trailCamera": command.reset_trailCamera
+        }
+
+        # ✅ Po úspěšném přečtení resetujeme hodnoty na False/NULL
+        command.send_sms = False
+        command.take_photo = False
+        command.reset_trailCamera = False
+        command.phone_number = None
+        session.commit()
+
+        return jsonify(response)
 
 
 # Konfigurační stránka
