@@ -6,11 +6,12 @@ from datetime import datetime
 from flask import Flask, request, flash, redirect, url_for, render_template, jsonify
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user
-from sqlalchemy import create_engine, event, Column, Integer, String, ForeignKey, select
+from sqlalchemy import create_engine, event, Column, Integer, String, ForeignKey, select, Boolean
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
 from azure.core.exceptions import ResourceExistsError
+import re
 
 # Flask aplikace
 app = Flask(__name__)
@@ -90,6 +91,15 @@ class Configuration(Base):
     photo_resolution = Column(String(50), nullable=False)
     photo_quality = Column(String(50), nullable=False)
     phone_number = Column(String(20), nullable=True)
+
+class CameraActions(Base):
+    __tablename__ = "camera_actions"
+    id = Column(Integer, primary_key=True)
+    send_sms = Column(Boolean, default=False)
+    phone_number = Column(String(20), nullable=True)
+    take_photo = Column(Boolean, default=False)
+    reset_trailCamera = Column(Boolean, default=False)
+
 
 # 🔹 Funkce pro načtení uživatele
 @login_manager.user_loader
@@ -212,6 +222,55 @@ def get_events():
         })
 
     return jsonify(events)
+
+@app.route("/send_sms", methods=["POST"])
+def send_sms():
+    data = request.json
+    phone_number = data.get("phone_number", "").strip()
+
+    # ✅ Validace telefonního čísla (musí mít správný formát)
+    phone_pattern = re.compile(r"^\+\d{10,15}$")
+    if not phone_pattern.match(phone_number):
+        return jsonify({"error": "Invalid phone number format. Use +420XXXXXXXXX"}), 400
+
+    with SessionLocal() as session:
+        camera_action = session.query(CameraActions).first()
+        if not camera_action:
+            camera_action = CameraActions()
+            session.add(camera_action)
+
+        camera_action.phone_number = phone_number
+        camera_action.send_sms = True  # Aktivujeme požadavek na SMS
+        session.commit()
+
+    return jsonify({"message": "SMS request saved", "phone_number": phone_number}), 200
+
+@app.route("/take_photo", methods=["POST"])
+def take_photo():
+    with SessionLocal() as session:
+        camera_action = session.query(CameraActions).first()
+        if not camera_action:
+            camera_action = CameraActions()
+            session.add(camera_action)
+
+        camera_action.take_photo = True  # Aktivujeme požadavek na fotku
+        session.commit()
+
+    return jsonify({"message": "Photo request saved"}), 200
+
+@app.route("/reset_camera", methods=["POST"])
+def reset_camera():
+    with SessionLocal() as session:
+        camera_action = session.query(CameraActions).first()
+        if not camera_action:
+            camera_action = CameraActions()
+            session.add(camera_action)
+
+        camera_action.reset_trailCamera = True  # Aktivujeme požadavek na reset kamery
+        session.commit()
+
+    return jsonify({"message": "Camera reset request saved"}), 200
+
 
 # Konfigurační stránka
 @app.route('/configuration')

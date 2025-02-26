@@ -278,13 +278,7 @@
             <h2>SMS Notification</h2>
             <label for="phone-input">Phone Number</label>
             <input type="text" id="phone-input" placeholder="+420XXXXXXXXX">
-
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="battery-checkbox"> Battery level</label>
-                <label><input type="checkbox" id="charging-checkbox"> Charging status</label>
-                <label><input type="checkbox" id="remaining-time-checkbox"> Remaining battery time</label>
-            </div>
-                <button id="send-sms-btn" class="action-button">Send info SMS</button>
+            <button id="send-sms-btn" class="action-button">Send info SMS</button>
         </div>
 
         <!-- Camera Controls -->
@@ -367,5 +361,81 @@
         document.getElementById('resolution-select').addEventListener('change', (e) => {
             updateStatus(`Resolution set to ${e.target.value}`);
         });
+
+        document.getElementById('send-sms-btn').addEventListener('click', () => {
+        let phoneNumber = document.getElementById("phone-input").value.trim();
+
+        // ✅ Validace telefonního čísla před odesláním
+        let phonePattern = /^\+\d{10,15}$/;
+        if (!phonePattern.test(phoneNumber)) {
+            alert("❌ Invalid phone number format! Use +420XXXXXXXXX");
+            return;
+        }
+
+        updateStatus("Sending SMS request...");
+
+        fetch("/send_sms", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone_number: phoneNumber })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert("❌ " + data.error);
+            } else {
+                alert("✅ SMS request saved for " + data.phone_number);
+            }
+        })
+        .catch(error => {
+            console.error("Error sending SMS request:", error);
+            alert("❌ Failed to send SMS request.");
+            });
+        });
+
+        // ✅ Kliknutí na "Take Photo"
+        document.getElementById('take-photo-btn').addEventListener('click', () => {
+            updateStatus("Requesting to take a photo...");
+
+            fetch("/take_photo", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("❌ " + data.error);
+                } else {
+                    alert("📸 Photo request sent successfully!");
+                }
+            })
+            .catch(error => {
+                console.error("Error requesting photo:", error);
+                alert("❌ Failed to request photo.");
+            });
+        });
+
+        // ✅ Kliknutí na "Reset Camera"
+        document.getElementById('reset-device-btn').addEventListener('click', () => {
+            updateStatus("Requesting camera reset...");
+
+            fetch("/reset_camera", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("❌ " + data.error);
+                } else {
+                    alert("🔄 Reset request sent successfully!");
+                }
+            })
+            .catch(error => {
+                console.error("Error requesting reset:", error);
+                alert("❌ Failed to request camera reset.");
+            });
+        });
+
     </script>
 </body>
