@@ -174,6 +174,10 @@ def login():
 # Upload obrázku a metadat
 @app.route('/upload', methods=['POST'])
 def upload_photo():
+    token = request.headers.get("X-Api-Key")
+    if token != CONFIG_SECRET:
+        return jsonify({"error": "Unauthorized"}), 403  # Neoprávněný přístup
+
     if 'file' not in request.files:
         return "No file part", 400
     file = request.files['file']
