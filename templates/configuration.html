@@ -239,12 +239,11 @@
                 </div>
 
                 <div class="group">
-                    <label for="interval-select">Interval between shots</label>
-                    <select id="interval-select">
-                        <option value="5 s">5 s</option>
-                        <option value="10 s">10 s</option>
-                        <option value="30 s">30 s</option>
-                        <option value="60 s">60 s</option>
+                    <label for="send_photo-select">Send Photos</label>
+                    <select id="send_photo-select">
+                        <option value="0">Immediately</option>
+                        <option value="1">Every hour</option>
+                        <option value="2">Every 3 hours</option>
                     </select>
                 </div>
 
@@ -313,7 +312,7 @@
         document.getElementById("save-config-btn").addEventListener("click", function() {
             let configData = {
                 wakeUp_time: document.getElementById("wakeUpTime-select").value,
-                interval_shots: document.getElementById("interval-select").value,
+                send_photo: document.getElementById("send_photo-select").value,
                 photo_resolution: document.getElementById("resolution-select").value,
                 photo_quality: document.getElementById("quality-select").value,
                 phone_number: document.getElementById("phone-input").value,
@@ -354,8 +353,8 @@
             updateStatus(`wakeUpTime set to ${e.target.value}`);
         });
 
-        document.getElementById('interval-select').addEventListener('change', (e) => {
-            updateStatus(`Interval set to ${e.target.value}`);
+        document.getElementById('send_photo-select').addEventListener('change', (e) => {
+            updateStatus(`Send Photo config set to ${e.target.value}`);
         });
 
         document.getElementById('resolution-select').addEventListener('change', (e) => {
