@@ -87,7 +87,7 @@ class Configuration(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("User.id"), nullable=False)
     wakeUp_time = Column(String(50), nullable=False)
-    interval_shots = Column(String(50), nullable=False)
+    send_photo = Column(String(50), nullable=False)
     photo_resolution = Column(String(50), nullable=False)
     photo_quality = Column(String(50), nullable=False)
     phone_number = Column(String(20), nullable=True)
@@ -121,7 +121,7 @@ def get_configuration():
 
         response_data = {
             "wakeUp_time": config.wakeUp_time,
-            "interval_shots": config.interval_shots,
+            "send_photo": config.send_photos,
             "photo_resolution": config.photo_resolution,
             "photo_quality": config.photo_quality,
             "phone_number": config.phone_number,
@@ -145,7 +145,7 @@ def save_configuration():
                 config = Configuration(user_id=current_user.id)
                 session.add(config)
             config.wakeUp_time = data.get("wakeUp_time", "60 s")
-            config.interval_shots = data.get("interval_shots", "5 s")
+            config.send_photo = data.get("send_photo", "0")
             config.photo_resolution = data.get("photo_resolution", "1024x768")
             config.photo_quality = data.get("photo_quality", "High")
             config.phone_number = data.get("phone_number", "+420735009345")
