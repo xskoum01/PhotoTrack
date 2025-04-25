@@ -121,7 +121,7 @@ def get_configuration():
 
         response_data = {
             "wakeUp_time": config.wakeUp_time,
-            "send_photo": config.send_photos,
+            "send_photo": config.send_photo,
             "photo_resolution": config.photo_resolution,
             "photo_quality": config.photo_quality,
             "phone_number": config.phone_number,
