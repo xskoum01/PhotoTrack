@@ -2,6 +2,7 @@ import os
 import struct
 import urllib
 from datetime import datetime
+import pytz
 
 from flask import Flask, request, flash, redirect, url_for, render_template, jsonify
 from flask_cors import CORS
@@ -186,14 +187,17 @@ def upload_photo():
 
     # Přidání časové značky k názvu souboru a přípony .jpg
     jpgExtension = ".jpg"
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    czech_tz = pytz.timezone("Europe/Prague")
+    now_czech = datetime.now(czech_tz)
+
+    timestamp = now_czech.strftime('%Y%m%d%H%M%S')
     new_filename = f"{timestamp}_{file.filename}{jpgExtension}"
 
     # Metadata z požadavku
     battery_level = request.form.get('battery_level', 'Unknown')
     charging_status = request.form.get('charging_status', 'Unknown')
     time_to_dead = request.form.get('time_to_dead', 'Unknown')
-    date_taken = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    date_taken = now_czech.strftime('%Y-%m-%dT%H:%M:%S')
 
     # Nahrání souboru do Azure Blob Storage
     blob_client = blob_service_client.get_blob_client(container=container_name, blob=new_filename)
