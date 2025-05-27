@@ -166,7 +166,7 @@ def login():
             user = session.query(User).filter_by(username=username).first()
             if user and user.password_hash == password:
                 login_user(user)
-                flash("Successfully logged in", "Success")
+                #flash("Successfully logged in", "Success")
                 return redirect(url_for('PhotoTrackCalendar'))
             else:
                 flash("Invalid username or password", "danger")
