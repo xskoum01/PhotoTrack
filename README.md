@@ -38,9 +38,6 @@ Tato diplomová práce řeší návrh, realizaci a testování **mobilní fotopa
 
 ---
 
-
----
-
 ## ⚙️ Základní funkce
 
 - **Detekce pohybu** → Wake-up → Pořízení fotky → Odeslání na server
